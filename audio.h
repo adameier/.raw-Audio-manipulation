@@ -11,10 +11,40 @@ namespace MRXADA002 {
     private:
         std::vector<T> data_vector;
         int channels;
-        int sampleRate;
+        //int sampleRate;
         int fileSizeInBytes;
     public:
-        Audio() : channels(N) {} //default constructor
+        //default constructor
+        Audio() : channels(N) {}
+
+        //copy constructor
+        Audio(const Audio<T, N> & rhs) :
+            data_vector(rhs.data_vector),
+            channels(rhs.channels),
+            fileSizeInBytes(rhs.fileSizeInBytes) {}
+
+        //move constructor
+        Audio(Audio<T, N> && rhs) :
+            data_vector(std::move(rhs.data_vector)),
+            channels(rhs.channels),
+            fileSizeInBytes(rhs.fileSizeInBytes) {}
+
+        //copy assignment operator
+        Audio<T, N> & operator=(const Audio<T, N> & rhs) {
+            data_vector = rhs.data_vector;
+            channels = rhs.channels;
+            fileSizeInBytes = rhs.fileSizeInBytes;
+            return *this;
+        }
+
+        //move assignment operator
+        Audio<T, N> & operator=(Audio<T, N> && rhs) {
+            data_vector = std::move(rhs.data_vector);
+            channels = rhs.channels;
+            fileSizeInBytes = rhs.fileSizeInBytes;
+            return *this;
+        }
+
 
         void load(std::string filename) {
 
@@ -49,10 +79,40 @@ namespace MRXADA002 {
     private:
         std::vector<std::pair<T,T>> data_vector;
         int channels;
-        int sampleRate;
+        //int sampleRate;
         int fileSizeInBytes;
     public:
+        //default constructor
         Audio() : channels(2){}
+
+        //copy constructor
+        Audio(const Audio<T, 2> & rhs) :
+            data_vector(rhs.data_vector),
+            channels(rhs.channels),
+            fileSizeInBytes(rhs.fileSizeInBytes) {}
+
+        //move constructor
+        Audio(Audio<T, 2> && rhs) :
+            data_vector(std::move(rhs.data_vector)),
+            channels(rhs.channels),
+            fileSizeInBytes(rhs.fileSizeInBytes) {}
+
+        //copy assignment operator
+        Audio<T, 2> & operator=(const Audio<T, 2> & rhs) {
+            data_vector = rhs.data_vector;
+            channels = rhs.channels;
+            fileSizeInBytes = rhs.fileSizeInBytes;
+            return *this;
+        }
+
+        //move assignment operator
+        Audio<T, 2> & operator=(Audio<T, 2> && rhs) {
+            data_vector = std::move(rhs.data_vector);
+            channels = rhs.channels;
+            fileSizeInBytes = rhs.fileSizeInBytes;
+            return *this;
+        }
+
 
         void load(std::string filename) {
 
