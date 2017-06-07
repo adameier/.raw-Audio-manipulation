@@ -45,6 +45,27 @@ namespace MRXADA002 {
             return *this;
         }
 
+        //+ OPERATOR
+        Audio<T, N> operator+(const Audio<T, N> rhs) {
+            Audio<T, N> a(*this);
+            int m = std::min(a.data_vector.size(), rhs.data_vector.size());
+            for (int i = 0; i < m; ++i) {
+                int newVal = a.data_vector[i] + rhs.data_vector[i]; //add amplitudes
+                if (sizeof(T)==1) {
+                    if (newVal > INT8_MAX) {    //clamp value for  8 bit
+                        newVal = INT8_MAX;
+                    }
+                    a.data_vector[i] = newVal;
+                }
+                if (sizeof(T)==2) {             //clamp value for 16 bit
+                    if (newVal > INT16_MAX) {
+                        newVal = INT16_MAX;
+                    }
+                    a.data_vector[i] = newVal;
+                }
+            }
+            return a;
+        }
 
         void load(std::string filename) {
 
@@ -55,8 +76,9 @@ namespace MRXADA002 {
             fileSizeInBytes = file.tellg();
             file.seekg(0, file.beg);
 
-            int NumberOfSamples = fileSizeInBytes / (sizeof(T) * channels);
-            data_vector.resize(NumberOfSamples);
+            int numberOfSamples = fileSizeInBytes / (sizeof(T) * channels);
+            std::cout << sizeof(T) << '\n';
+            data_vector.resize(numberOfSamples);
 
             file.read((char*)&data_vector[0], fileSizeInBytes);
             std::cout << "File loaded." << '\n';
@@ -75,6 +97,7 @@ namespace MRXADA002 {
         }
     };
 
+    //STEREO TEMPLATE SPECIALIZATION
     template<typename T> class Audio<T, 2> {
     private:
         std::vector<std::pair<T,T>> data_vector;
@@ -113,6 +136,36 @@ namespace MRXADA002 {
             return *this;
         }
 
+        //+ OPERATOR
+        Audio<T, 2> operator+(const Audio<T, 2> rhs) {
+            Audio<T, 2> a(*this);
+            int m = std::min(a.data_vector.size(), rhs.data_vector.size());
+            for (int i = 0; i < m; ++i) {
+                int newValLEFT = a.data_vector[i].first + rhs.data_vector[i].first; //add amplitudes of lefts
+                int newValRIGHT = a.data_vector[i].second + rhs.data_vector[i].second; //add amplitudes of rights
+                if (sizeof(T)==1) {
+                    if (newValLEFT > INT8_MAX) {    //clamp value for  8 bit
+                        newValLEFT = INT8_MAX;
+                    }
+                    if (newValRIGHT > INT8_MAX) {    //clamp value for  8 bit
+                        newValRIGHT = INT8_MAX;
+                    }
+                    a.data_vector[i].first = newValLEFT;
+                    a.data_vector[i].second = newValRIGHT;
+                }
+                if (sizeof(T)==2) {
+                    if (newValLEFT > INT16_MAX) {    //clamp left value for 16 bit
+                        newValLEFT = INT16_MAX;
+                    }
+                    if (newValRIGHT > INT16_MAX) {    //clamp right value for 16 bit
+                        newValRIGHT = INT16_MAX;
+                    }
+                    a.data_vector[i].first = newValLEFT;
+                    a.data_vector[i].second = newValRIGHT;
+                }
+            }
+            return a;
+        }
 
         void load(std::string filename) {
 
@@ -123,8 +176,8 @@ namespace MRXADA002 {
             fileSizeInBytes = file.tellg();
             file.seekg(0, file.beg);
 
-            int NumberOfSamples = fileSizeInBytes / (sizeof(T) * channels);
-            data_vector.resize(NumberOfSamples);
+            int numberOfSamples = fileSizeInBytes / (sizeof(T) * channels);
+            data_vector.resize(numberOfSamples);
 
             file.read((char*)&data_vector[0], fileSizeInBytes);
             std::cout << "Stereo file loaded." << '\n';
