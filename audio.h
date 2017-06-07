@@ -72,6 +72,15 @@ namespace MRXADA002 {
             return a;
         }
 
+        //VOLUME FACTOR
+        Audio<T, N> operator*( std::pair<float, float> rhs) {
+            Audio<T, N> a(*this);               //use copy constructor
+            for (int i = 0; i < a.data_vector.size(); ++i) {
+                a.data_vector[i]*=rhs.first; //scale amplitude
+            }
+            return a;
+        }
+
         void load(std::string filename) {
 
             const char * cfilename = filename.c_str();
@@ -174,6 +183,16 @@ namespace MRXADA002 {
             Audio<T, 2> a(*this);                       //use copy constructor on lhs audio
             for (int i = 0; i < rhs.data_vector.size(); ++i) {
                 a.data_vector.push_back(rhs.data_vector[i]);         //append rhs's values onto data_vector
+            }
+            return a;
+        }
+
+        //VOLUME FACTOR
+        Audio<T, 2> operator*( std::pair<float, float> rhs) {
+            Audio<T, 2> a(*this);                       //use copy constructor
+            for (int i = 0; i < a.data_vector.size(); ++i) {
+                a.data_vector[i].first*=rhs.first;  //scale amplitude
+                a.data_vector[i].second*=rhs.second;
             }
             return a;
         }

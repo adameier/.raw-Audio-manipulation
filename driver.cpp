@@ -106,7 +106,54 @@ int main(int argc, char** argv) {
             }
         }
     }
-    //DEFAULT - just load and save audio file  
+    //VOLUME FACTOR
+    else if (std::string(argv[argIndex])=="-v") {
+        ++argIndex;
+        float r1 = atof(argv[argIndex]);
+        ++argIndex;
+        float r2 = atof(argv[argIndex]);
+        ++argIndex;
+        if (r1 < 0.0f)  //clamp values
+            r1 = 0.0f;
+        if (r1 > 1.0f)
+            r1 = 1.0f;
+        if (r2 < 0.0f)
+            r2 = 0.0f;
+        if (r2 > 1.0f)
+            r2 = 1.0f;
+        std::pair<float, float> pairFactor (r1, r2);
+        std::string inFilename1 = std::string(argv[argIndex]);
+        if (noChannels==1) {
+            if (bitCount==8) {
+                Audio<int8_t, 1> sound1;
+                sound1.load(inFilename1);
+                Audio<int8_t, 1> sound3 = sound1*pairFactor;
+                sound3.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 1> sound1;
+                sound1.load(inFilename1);
+                Audio<int16_t, 1> sound3 = sound1*pairFactor;
+                sound3.save(outFilename);
+            }
+        }
+        if (noChannels==2) {
+            if (bitCount==8) {
+                Audio<int8_t, 2> sound1;
+                sound1.load(inFilename1);
+                Audio<int8_t, 2> sound3 = sound1*pairFactor;
+                sound3.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 2> sound1;
+                sound1.load(inFilename1);
+                Audio<int16_t, 2> sound3 = sound1*pairFactor;
+                sound3.save(outFilename);
+            }
+        }
+    }
+
+    //DEFAULT - just load and save 1 audio file
     else {
         std::string inFilename1 = std::string(argv[argIndex]);
         if (bitCount==8) {
