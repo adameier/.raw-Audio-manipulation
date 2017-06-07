@@ -12,7 +12,7 @@ namespace MRXADA002 {
         std::vector<T> data_vector;
         int channels;
         //int sampleRate;
-        int fileSizeInBytes;
+        //int fileSizeInBytes;
     public:
         //default constructor
         Audio() : channels(N) {}
@@ -20,20 +20,17 @@ namespace MRXADA002 {
         //copy constructor
         Audio(const Audio<T, N> & rhs) :
             data_vector(rhs.data_vector),
-            channels(rhs.channels),
-            fileSizeInBytes(rhs.fileSizeInBytes) {}
+            channels(rhs.channels) {}
 
         //move constructor
         Audio(Audio<T, N> && rhs) :
             data_vector(std::move(rhs.data_vector)),
-            channels(rhs.channels),
-            fileSizeInBytes(rhs.fileSizeInBytes) {}
+            channels(rhs.channels) {}
 
         //copy assignment operator
         Audio<T, N> & operator=(const Audio<T, N> & rhs) {
             data_vector = rhs.data_vector;
             channels = rhs.channels;
-            fileSizeInBytes = rhs.fileSizeInBytes;
             return *this;
         }
 
@@ -41,7 +38,6 @@ namespace MRXADA002 {
         Audio<T, N> & operator=(Audio<T, N> && rhs) {
             data_vector = std::move(rhs.data_vector);
             channels = rhs.channels;
-            fileSizeInBytes = rhs.fileSizeInBytes;
             return *this;
         }
 
@@ -67,13 +63,22 @@ namespace MRXADA002 {
             return a;
         }
 
+        //CONCATENATE
+        Audio<T, N> operator|(const Audio<T,N> rhs) {
+            Audio<T, N> a(*this);                       //use copy constructor on lhs audio
+            for (int i = 0; i < rhs.data_vector.size(); ++i) {
+                a.data_vector.push_back(rhs.data_vector[i]);         //append rhs's values onto data_vector
+            }
+            return a;
+        }
+
         void load(std::string filename) {
 
             const char * cfilename = filename.c_str();
             std::ifstream file(cfilename, std::ios::binary);
 
             file.seekg(0, file.end);
-            fileSizeInBytes = file.tellg();
+            int fileSizeInBytes = file.tellg();
             file.seekg(0, file.beg);
 
             int numberOfSamples = fileSizeInBytes / (sizeof(T) * channels);
@@ -90,6 +95,7 @@ namespace MRXADA002 {
             const char * cfilename = filename.c_str();
             std::ofstream file(cfilename, std::ios::binary);
 
+            int fileSizeInBytes = data_vector.size() * sizeof(T) * channels; //calculate bytes to be written
             file.write((char*)&data_vector[0], fileSizeInBytes);
             std::cout << "File saved." << '\n';
             file.close();
@@ -103,7 +109,7 @@ namespace MRXADA002 {
         std::vector<std::pair<T,T>> data_vector;
         int channels;
         //int sampleRate;
-        int fileSizeInBytes;
+        //int fileSizeInBytes;
     public:
         //default constructor
         Audio() : channels(2){}
@@ -111,20 +117,17 @@ namespace MRXADA002 {
         //copy constructor
         Audio(const Audio<T, 2> & rhs) :
             data_vector(rhs.data_vector),
-            channels(rhs.channels),
-            fileSizeInBytes(rhs.fileSizeInBytes) {}
+            channels(rhs.channels){}
 
         //move constructor
         Audio(Audio<T, 2> && rhs) :
             data_vector(std::move(rhs.data_vector)),
-            channels(rhs.channels),
-            fileSizeInBytes(rhs.fileSizeInBytes) {}
+            channels(rhs.channels){}
 
         //copy assignment operator
         Audio<T, 2> & operator=(const Audio<T, 2> & rhs) {
             data_vector = rhs.data_vector;
             channels = rhs.channels;
-            fileSizeInBytes = rhs.fileSizeInBytes;
             return *this;
         }
 
@@ -132,7 +135,6 @@ namespace MRXADA002 {
         Audio<T, 2> & operator=(Audio<T, 2> && rhs) {
             data_vector = std::move(rhs.data_vector);
             channels = rhs.channels;
-            fileSizeInBytes = rhs.fileSizeInBytes;
             return *this;
         }
 
@@ -167,13 +169,22 @@ namespace MRXADA002 {
             return a;
         }
 
+        //CONCATENATE
+        Audio<T, 2> operator|(const Audio<T,2> rhs) {
+            Audio<T, 2> a(*this);                       //use copy constructor on lhs audio
+            for (int i = 0; i < rhs.data_vector.size(); ++i) {
+                a.data_vector.push_back(rhs.data_vector[i]);         //append rhs's values onto data_vector
+            }
+            return a;
+        }
+
         void load(std::string filename) {
 
             const char * cfilename = filename.c_str();
             std::ifstream file(cfilename, std::ios::binary);
 
             file.seekg(0, file.end);
-            fileSizeInBytes = file.tellg();
+            int fileSizeInBytes = file.tellg();
             file.seekg(0, file.beg);
 
             int numberOfSamples = fileSizeInBytes / (sizeof(T) * channels);
@@ -189,6 +200,7 @@ namespace MRXADA002 {
             const char * cfilename = filename.c_str();
             std::ofstream file(cfilename, std::ios::binary);
 
+            int fileSizeInBytes = data_vector.size() * sizeof(T) * channels; //calculate bytes to be written
             file.write((char*)&data_vector[0], fileSizeInBytes);
             std::cout << "Stereo file saved." << '\n';
             file.close();

@@ -20,6 +20,7 @@ int main(int argc, char** argv) {
         outFilename = "out";
     }
 
+    //ADD op
     if (std::string(argv[argIndex])=="-add") {
         ++argIndex;
         std::string inFilename1 = std::string(argv[argIndex]);
@@ -61,9 +62,52 @@ int main(int argc, char** argv) {
                 sound3.save(outFilename);
             }
         }
-
-
-    } else {
+    }
+    //CONCATENATE op
+    else if (std::string(argv[argIndex])=="-cat") {
+        ++argIndex;
+        std::string inFilename1 = std::string(argv[argIndex]);
+        ++argIndex;
+        std::string inFilename2 = std::string(argv[argIndex]);
+        if (noChannels==1) {
+            if (bitCount==8) {
+                Audio<int8_t, 1> sound1;
+                Audio<int8_t, 1> sound2;
+                sound1.load(inFilename1);
+                sound2.load(inFilename2);
+                Audio<int8_t, 1> sound3 = sound1 | sound2;
+                sound3.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 1> sound1;
+                Audio<int16_t, 1> sound2;
+                sound1.load(inFilename1);
+                sound2.load(inFilename2);
+                Audio<int16_t, 1> sound3 = sound1 | sound2;
+                sound3.save(outFilename);
+            }
+        }
+        if (noChannels==2) {
+            if (bitCount==8) {
+                Audio<int8_t, 2> sound1;
+                Audio<int8_t, 2> sound2;
+                sound1.load(inFilename1);
+                sound2.load(inFilename2);
+                Audio<int8_t, 2> sound3 = sound1 | sound2;
+                sound3.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 2> sound1;
+                Audio<int16_t, 2> sound2;
+                sound1.load(inFilename1);
+                sound2.load(inFilename2);
+                Audio<int16_t, 2> sound3 = sound1 | sound2;
+                sound3.save(outFilename);
+            }
+        }
+    }
+    //DEFAULT - just load and save audio file  
+    else {
         std::string inFilename1 = std::string(argv[argIndex]);
         if (bitCount==8) {
             if (noChannels==1) {
