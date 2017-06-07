@@ -272,6 +272,92 @@ int main(int argc, char** argv) {
             }
         }
     }
+    else if (std::string(argv[argIndex])=="-rms") {
+        ++argIndex;
+        std::string inFilename1 = std::string(argv[argIndex]);
+        if (noChannels==1) {
+            if (bitCount==8) {
+                Audio<int8_t, 1> sound1;
+                sound1.load(inFilename1);
+                std::cout << "RMS: " << sound1.rms() << '\n';
+                sound1.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 1> sound1;
+                sound1.load(inFilename1);
+                std::cout << "RMS: " << sound1.rms() << '\n';
+                sound1.save(outFilename);
+            }
+        }
+        if (noChannels==2) {
+            if (bitCount==8) {
+                Audio<int8_t, 2> sound1;
+                sound1.load(inFilename1);
+                std::cout << "Left RMS: " << sound1.rms().first << '\n';
+                std::cout << "Right RMS: " << sound1.rms().second << '\n';
+                sound1.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 2> sound1;
+                sound1.load(inFilename1);
+                std::cout << "Left RMS: " << sound1.rms().first << '\n';
+                std::cout << "Right RMS: " << sound1.rms().second << '\n';
+                sound1.save(outFilename);
+            }
+        }
+    }
+    else if (std::string(argv[argIndex])=="-norm") {
+        ++argIndex;
+        double rmsleft = atof(argv[argIndex]);  //desired left rms
+        ++argIndex;
+        double rmsright = atof(argv[argIndex]); //desired right rms
+        ++argIndex;
+        std::string inFilename1 = std::string(argv[argIndex]);
+        if (noChannels==1) {
+            if (bitCount==8) {
+                Audio<int8_t, 1> sound1;
+                sound1.load(inFilename1);
+                double rmsCurrent = sound1.rms();
+                double rmsRatioL = rmsleft / rmsCurrent; //ratio = desired rms/current rms
+                double rmsRatioR = rmsleft / rmsCurrent;
+                std::pair<double, double> rmsVals (rmsRatioL, rmsRatioR); //put ratios into pair of left/right
+                Audio<int8_t, 1> sound2 = sound1.normalize(rmsVals);
+                sound2.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 1> sound1;
+                sound1.load(inFilename1);
+                double rmsCurrent = sound1.rms();
+                double rmsRatioL = rmsleft / rmsCurrent;
+                double rmsRatioR = rmsleft / rmsCurrent;
+                std::pair<double, double> rmsVals (rmsRatioL, rmsRatioR);
+                Audio<int16_t, 1> sound2 = sound1.normalize(rmsVals);
+                sound2.save(outFilename);
+            }
+        }
+        if (noChannels==2) {
+            if (bitCount==8) {
+                Audio<int8_t, 2> sound1;
+                sound1.load(inFilename1);
+                std::pair<double, double> rmsCurrent = sound1.rms();
+                double rmsRatioL = rmsleft / rmsCurrent.first;
+                double rmsRatioR = rmsleft / rmsCurrent.second;
+                std::pair<double, double> rmsVals (rmsRatioL, rmsRatioR);
+                Audio<int8_t, 2> sound2 = sound1.normalize(rmsVals);
+                sound2.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 2> sound1;
+                sound1.load(inFilename1);
+                std::pair<double, double> rmsCurrent = sound1.rms();
+                double rmsRatioL = rmsleft / rmsCurrent.first;
+                double rmsRatioR = rmsleft / rmsCurrent.second;
+                std::pair<double, double> rmsVals (rmsRatioL, rmsRatioR);
+                Audio<int16_t, 2> sound2 = sound1.normalize(rmsVals);
+                sound2.save(outFilename);
+            }
+        }
+    }
 
     //DEFAULT - just load and save 1 audio file
     else {

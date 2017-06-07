@@ -6,6 +6,8 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+#include <numeric>
+#include <math.h>
 
 namespace MRXADA002 {
     template<typename T, int N> class Audio {
@@ -15,6 +17,29 @@ namespace MRXADA002 {
         //int sampleRate;
         //int fileSizeInBytes;
     public:
+
+        //NORMALIZE FUNCTOR
+        class Normalize {
+        public:
+            Normalize(const double & rmsRate) : ptr(&rmsRate) {}
+
+            T operator()(const T & vectorVal) {
+                int out = (int)(*ptr * vectorVal);
+                if (sizeof(T)==1) {
+                    if (out > INT8_MAX) {    //clamp value for  8 bit
+                        out = INT8_MAX;
+                    }
+                }
+                if (sizeof(T)==2) {
+                    if (out > INT16_MAX) {    //clamp value for  16 bit
+                        out = INT16_MAX;
+                    }
+                }
+                return out;
+            }
+            const double * ptr;
+        };
+
         //default constructor
         Audio() : channels(N) {}
 
@@ -112,6 +137,19 @@ namespace MRXADA002 {
             return out;
         }
 
+        //RMS FUNCTION
+        double rms() {
+            return sqrt(std::accumulate(this->data_vector.begin(), this->data_vector.end(), 0.0, [&](double a, double b){return a + pow(b, 2)/this->data_vector.size();}));
+        }
+
+        //NORMALIZE FUNCTION
+        Audio<T, N> normalize(std::pair<double, double> rms) {
+            Audio<T, N> a(*this);
+            Normalize functor(rms.first);
+            std::transform(this->data_vector.begin(), this->data_vector.end(), a.data_vector.begin(), functor);
+            return a;
+        }
+
         void load(std::string filename) {
 
             const char * cfilename = filename.c_str();
@@ -151,6 +189,40 @@ namespace MRXADA002 {
         //int sampleRate;
         //int fileSizeInBytes;
     public:
+
+        //NORMALIZE FUNCTOR SECILIALIZED FOR STEREO
+        class Normalize {
+        public:
+            Normalize(const std::pair<double, double> & rmsRate) : ptr(&rmsRate) {}
+
+            std::pair<T, T> operator()(std::pair<T, T> vectorVal) {
+                std::pair<T, T> out;               //output pair
+                int outLeft = (int)(vectorVal.first * ptr->first);
+                int outRight = (int)(vectorVal.second * ptr->second);
+                if (sizeof(T)==1) {
+                    if (outLeft > INT8_MAX) {    //clamp value for  8 bit
+                        outLeft = INT8_MAX;
+                    }
+                    if (outRight > INT8_MAX) {    //clamp value for  8 bit
+                        outRight = INT8_MAX;
+                    }
+                }
+                if (sizeof(T)==2) {
+                    if (outLeft > INT16_MAX) {    //clamp value for  16 bit
+                        outLeft = INT16_MAX;
+                    }
+                    if (outRight > INT16_MAX) {    //clamp value for  16 bit
+                        outRight = INT16_MAX;
+                    }
+                }
+                out.first = outLeft;
+                out.second = outRight;
+                return out;
+            }
+            const std::pair<double,double> * ptr;
+            int channels;
+        };
+
         //default constructor
         Audio() : channels(2){}
 
@@ -258,6 +330,22 @@ namespace MRXADA002 {
             return out;
         }
 
+        //RMS FUNCTION
+        std::pair<double, double> rms() {
+            double left = sqrt(std::accumulate(this->data_vector.begin(), this->data_vector.end(), 0.0, [&](double a, std::pair<T,T> b){return a + pow(b.first, 2)/this->data_vector.size();}));
+            double right = sqrt(std::accumulate(this->data_vector.begin(), this->data_vector.end(), 0.0, [&](double a, std::pair<T,T> b){return a + pow(b.second, 2)/this->data_vector.size();}));
+            std::pair<double, double> ans (left, right);
+            return ans;
+        }
+
+        //NORMALIZE FUNCTION
+        Audio<T, 2> normalize(std::pair<double, double> rms) {
+            Audio<T, 2> a(*this);
+            Normalize functor(rms);
+            std::transform(this->data_vector.begin(), this->data_vector.end(), a.data_vector.begin(), functor);
+            return a;
+        }
+
         void load(std::string filename) {
 
             const char * cfilename = filename.c_str();
@@ -287,6 +375,9 @@ namespace MRXADA002 {
 
         }
     };
+
+
+
 
 
 }
