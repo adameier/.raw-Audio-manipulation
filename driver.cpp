@@ -179,13 +179,13 @@ int main(int argc, char** argv) {
             if (bitCount==8) {
                 Audio<int8_t, 2> sound1;
                 sound1.load(inFilename1);
-                Audio<int8_t, 2> sound3 = sound1*range;
+                Audio<int8_t, 2> sound3 = sound1^range;
                 sound3.save(outFilename);
             }
             if (bitCount==16) {
                 Audio<int16_t, 2> sound1;
                 sound1.load(inFilename1);
-                Audio<int16_t, 2> sound3 = sound1*range;
+                Audio<int16_t, 2> sound3 = sound1^range;
                 sound3.save(outFilename);
             }
         }
