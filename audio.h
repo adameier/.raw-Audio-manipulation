@@ -81,6 +81,18 @@ namespace MRXADA002 {
             return a;
         }
 
+        //CUT RANGE
+        Audio<T, N> operator^(std::pair<int, int> rhs ) {
+            Audio<T, N> a;
+            for (int i = 0; i < rhs.first; ++i) {
+                a.data_vector.push_back(this->data_vector[i]);
+            }
+            for (int i = rhs.second + 1; i < this->data_vector.size(); ++i) {
+                a.data_vector.push_back(this->data_vector[i]);
+            }
+            return a;
+        }
+
         void load(std::string filename) {
 
             const char * cfilename = filename.c_str();
@@ -193,6 +205,18 @@ namespace MRXADA002 {
             for (int i = 0; i < a.data_vector.size(); ++i) {
                 a.data_vector[i].first*=rhs.first;  //scale amplitude
                 a.data_vector[i].second*=rhs.second;
+            }
+            return a;
+        }
+
+        //CUT RANGE
+        Audio<T, 2> operator^(std::pair<int, int> rhs ) {
+            Audio<T, 2> a;
+            for (int i = 0; i < rhs.first; ++i) {
+                a.data_vector.push_back(this->data_vector[i]);
+            }
+            for (int i = rhs.second + 1; i < this->data_vector.size(); ++i) {
+                a.data_vector.push_back(this->data_vector[i]);
             }
             return a;
         }

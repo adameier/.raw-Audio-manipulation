@@ -152,6 +152,45 @@ int main(int argc, char** argv) {
             }
         }
     }
+    //CUT RANGE OP
+    else if (std::string(argv[argIndex])=="-cut") {
+        ++argIndex;
+        int r1 = atoi(argv[argIndex]);
+        ++argIndex;
+        int r2 = atoi(argv[argIndex]);
+        ++argIndex;
+        std::pair<int, int> range (r1, r2);
+        std::string inFilename1 = std::string(argv[argIndex]);
+        if (noChannels==1) {
+            if (bitCount==8) {
+                Audio<int8_t, 1> sound1;
+                sound1.load(inFilename1);
+                Audio<int8_t, 1> sound3 = sound1^range;
+                sound3.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 1> sound1;
+                sound1.load(inFilename1);
+                Audio<int16_t, 1> sound3 = sound1^range;
+                sound3.save(outFilename);
+            }
+        }
+        if (noChannels==2) {
+            if (bitCount==8) {
+                Audio<int8_t, 2> sound1;
+                sound1.load(inFilename1);
+                Audio<int8_t, 2> sound3 = sound1*range;
+                sound3.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 2> sound1;
+                sound1.load(inFilename1);
+                Audio<int16_t, 2> sound3 = sound1*range;
+                sound3.save(outFilename);
+            }
+        }
+    }
+
 
     //DEFAULT - just load and save 1 audio file
     else {
