@@ -190,7 +190,88 @@ int main(int argc, char** argv) {
             }
         }
     }
-
+    //REVERSE
+    else if (std::string(argv[argIndex])=="-rev") {
+        ++argIndex;
+        std::string inFilename1 = std::string(argv[argIndex]);
+        if (noChannels==1) {
+            if (bitCount==8) {
+                Audio<int8_t, 1> sound1;
+                sound1.load(inFilename1);
+                sound1.reverse();
+                sound1.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 1> sound1;
+                sound1.load(inFilename1);
+                sound1.reverse();
+                sound1.save(outFilename);
+            }
+        }
+        if (noChannels==2) {
+            if (bitCount==8) {
+                Audio<int8_t, 2> sound1;
+                sound1.load(inFilename1);
+                sound1.reverse();
+                sound1.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 2> sound1;
+                sound1.load(inFilename1);
+                sound1.reverse();
+                sound1.save(outFilename);
+            }
+        }
+    }
+    //RANGED ADD OP
+    else if (std::string(argv[argIndex])=="-radd") {
+        ++argIndex;
+        int r1Sec = atoi(argv[argIndex]);
+        ++argIndex;
+        int r2Sec = atoi(argv[argIndex]);
+        int r1Sample = r1Sec*sampleRate;
+        int r2Sample = r2Sec*sampleRate;
+        ++argIndex;
+        std::string inFilename1 = std::string(argv[argIndex]);
+        ++argIndex;
+        std::string inFilename2 = std::string(argv[argIndex]);
+        if (noChannels==1) {
+            if (bitCount==8) {
+                Audio<int8_t, 1> sound1;
+                Audio<int8_t, 1> sound2;
+                sound1.load(inFilename1);
+                sound2.load(inFilename2);
+                Audio<int8_t, 1> sound3 = sound1.ranged_add(sound2, r1Sample, r2Sample);
+                sound3.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 1> sound1;
+                Audio<int16_t, 1> sound2;
+                sound1.load(inFilename1);
+                sound2.load(inFilename2);
+                Audio<int16_t, 1> sound3 = sound1.ranged_add(sound2, r1Sample, r2Sample);
+                sound3.save(outFilename);
+            }
+        }
+        if (noChannels==2) {
+            if (bitCount==8) {
+                Audio<int8_t, 2> sound1;
+                Audio<int8_t, 2> sound2;
+                sound1.load(inFilename1);
+                sound2.load(inFilename2);
+                Audio<int8_t, 2> sound3 = sound1.ranged_add(sound2, r1Sample, r2Sample);
+                sound3.save(outFilename);
+            }
+            if (bitCount==16) {
+                Audio<int16_t, 2> sound1;
+                Audio<int16_t, 2> sound2;
+                sound1.load(inFilename1);
+                sound2.load(inFilename2);
+                Audio<int16_t, 2> sound3 = sound1.ranged_add(sound2, r1Sample, r2Sample);
+                sound3.save(outFilename);
+            }
+        }
+    }
 
     //DEFAULT - just load and save 1 audio file
     else {
@@ -220,8 +301,6 @@ int main(int argc, char** argv) {
             }
         }
     }
-
-    //TO CHANGE
-
+    return 0;
 
 }

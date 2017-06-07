@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 namespace MRXADA002 {
     template<typename T, int N> class Audio {
@@ -42,7 +43,7 @@ namespace MRXADA002 {
         }
 
         //+ OPERATOR
-        Audio<T, N> operator+(const Audio<T, N> rhs) {
+        Audio<T, N> operator+(const Audio<T, N> & rhs) {
             Audio<T, N> a(*this);
             int m = std::min(a.data_vector.size(), rhs.data_vector.size());
             for (int i = 0; i < m; ++i) {
@@ -63,8 +64,8 @@ namespace MRXADA002 {
             return a;
         }
 
-        //CONCATENATE
-        Audio<T, N> operator|(const Audio<T,N> rhs) {
+        //CONCATENATE OPERATOR
+        Audio<T, N> operator|(const Audio<T,N> & rhs) {
             Audio<T, N> a(*this);                       //use copy constructor on lhs audio
             for (int i = 0; i < rhs.data_vector.size(); ++i) {
                 a.data_vector.push_back(rhs.data_vector[i]);         //append rhs's values onto data_vector
@@ -72,7 +73,7 @@ namespace MRXADA002 {
             return a;
         }
 
-        //VOLUME FACTOR
+        //VOLUME FACTOR OPERATOR
         Audio<T, N> operator*( std::pair<float, float> rhs) {
             Audio<T, N> a(*this);               //use copy constructor
             for (int i = 0; i < a.data_vector.size(); ++i) {
@@ -81,7 +82,7 @@ namespace MRXADA002 {
             return a;
         }
 
-        //CUT RANGE
+        //CUT RANGE OPERATOR
         Audio<T, N> operator^(std::pair<int, int> rhs ) {
             Audio<T, N> a;
             for (int i = 0; i < rhs.first; ++i) {
@@ -91,6 +92,24 @@ namespace MRXADA002 {
                 a.data_vector.push_back(this->data_vector[i]);
             }
             return a;
+        }
+
+        //REVERSE FUNCTION
+        Audio<T, N> & reverse() {
+            std::reverse(this->data_vector.begin(), this->data_vector.end());
+            return *this;
+        }
+
+        //RANGED ADD FUNCTION
+        Audio<T, N> ranged_add(const Audio<T,N> & rhs, int rangeStart, int rangeEnd) {
+            Audio<T, N> range1;
+            range1.data_vector.resize(rangeEnd-rangeStart);
+            Audio<T, N> range2;
+            range2.data_vector.resize(rangeEnd-rangeStart);
+            std::copy(this->data_vector.begin()+rangeStart, this->data_vector.begin()+rangeEnd, range1.data_vector.begin());
+            std::copy(rhs.data_vector.begin()+rangeStart, rhs.data_vector.begin()+rangeEnd, range2.data_vector.begin());
+            Audio<T, N> out = range1 + range2;
+            return out;
         }
 
         void load(std::string filename) {
@@ -160,7 +179,7 @@ namespace MRXADA002 {
         }
 
         //+ OPERATOR
-        Audio<T, 2> operator+(const Audio<T, 2> rhs) {
+        Audio<T, 2> operator+(const Audio<T, 2> & rhs) {
             Audio<T, 2> a(*this);
             int m = std::min(a.data_vector.size(), rhs.data_vector.size());
             for (int i = 0; i < m; ++i) {
@@ -191,7 +210,7 @@ namespace MRXADA002 {
         }
 
         //CONCATENATE
-        Audio<T, 2> operator|(const Audio<T,2> rhs) {
+        Audio<T, 2> operator|(const Audio<T,2> & rhs) {
             Audio<T, 2> a(*this);                       //use copy constructor on lhs audio
             for (int i = 0; i < rhs.data_vector.size(); ++i) {
                 a.data_vector.push_back(rhs.data_vector[i]);         //append rhs's values onto data_vector
@@ -219,6 +238,24 @@ namespace MRXADA002 {
                 a.data_vector.push_back(this->data_vector[i]);
             }
             return a;
+        }
+
+        //REVERSE FUNCTION
+        Audio<T, 2> & reverse() {
+            std::reverse(this->data_vector.begin(), this->data_vector.end());
+            return *this;
+        }
+
+        //RANGED ADD FUNCTION
+        Audio<T, 2> ranged_add(const Audio<T,2> & rhs, int rangeStart, int rangeEnd) {
+            Audio<T, 2> range1;
+            range1.data_vector.resize(rangeEnd-rangeStart);
+            Audio<T, 2> range2;
+            range2.data_vector.resize(rangeEnd-rangeStart);
+            std::copy(this->data_vector.begin()+rangeStart, this->data_vector.begin()+rangeEnd, range1.data_vector.begin());
+            std::copy(rhs.data_vector.begin()+rangeStart, rhs.data_vector.begin()+rangeEnd, range2.data_vector.begin());
+            Audio<T, 2> out = range1 + range2;
+            return out;
         }
 
         void load(std::string filename) {
@@ -250,6 +287,8 @@ namespace MRXADA002 {
 
         }
     };
+
+
 }
 
 #endif
