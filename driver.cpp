@@ -319,7 +319,7 @@ int main(int argc, char** argv) {
                 sound1.load(inFilename1);
                 double rmsCurrent = sound1.rms();
                 double rmsRatioL = rmsleft / rmsCurrent; //ratio = desired rms/current rms
-                double rmsRatioR = rmsleft / rmsCurrent;
+                double rmsRatioR = rmsright / rmsCurrent;
                 std::pair<double, double> rmsVals (rmsRatioL, rmsRatioR); //put ratios into pair of left/right
                 Audio<int8_t, 1> sound2 = sound1.normalize(rmsVals);
                 sound2.save(outFilename);
@@ -329,7 +329,7 @@ int main(int argc, char** argv) {
                 sound1.load(inFilename1);
                 double rmsCurrent = sound1.rms();
                 double rmsRatioL = rmsleft / rmsCurrent;
-                double rmsRatioR = rmsleft / rmsCurrent;
+                double rmsRatioR = rmsright / rmsCurrent;
                 std::pair<double, double> rmsVals (rmsRatioL, rmsRatioR);
                 Audio<int16_t, 1> sound2 = sound1.normalize(rmsVals);
                 sound2.save(outFilename);
@@ -341,7 +341,7 @@ int main(int argc, char** argv) {
                 sound1.load(inFilename1);
                 std::pair<double, double> rmsCurrent = sound1.rms();
                 double rmsRatioL = rmsleft / rmsCurrent.first;
-                double rmsRatioR = rmsleft / rmsCurrent.second;
+                double rmsRatioR = rmsright / rmsCurrent.second;
                 std::pair<double, double> rmsVals (rmsRatioL, rmsRatioR);
                 Audio<int8_t, 2> sound2 = sound1.normalize(rmsVals);
                 sound2.save(outFilename);
@@ -351,7 +351,7 @@ int main(int argc, char** argv) {
                 sound1.load(inFilename1);
                 std::pair<double, double> rmsCurrent = sound1.rms();
                 double rmsRatioL = rmsleft / rmsCurrent.first;
-                double rmsRatioR = rmsleft / rmsCurrent.second;
+                double rmsRatioR = rmsright / rmsCurrent.second;
                 std::pair<double, double> rmsVals (rmsRatioL, rmsRatioR);
                 Audio<int16_t, 2> sound2 = sound1.normalize(rmsVals);
                 sound2.save(outFilename);

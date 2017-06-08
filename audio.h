@@ -43,6 +43,19 @@ namespace MRXADA002 {
         //default constructor
         Audio() : channels(N) {}
 
+        //constructor for Testing
+        Audio(const std::vector<T> & in) :
+            channels(N),
+            data_vector(in) {}
+
+        //equality operator for testing
+        bool operator==(const Audio<T, N> & rhs) {
+            if (this->data_vector == rhs.data_vector)
+                return true;
+            else
+                return false;
+        }
+
         //copy constructor
         Audio(const Audio<T, N> & rhs) :
             data_vector(rhs.data_vector),
@@ -220,11 +233,15 @@ namespace MRXADA002 {
                 return out;
             }
             const std::pair<double,double> * ptr;
-            int channels;
         };
 
         //default constructor
         Audio() : channels(2){}
+
+        //constructor for Testing
+        Audio(const std::vector<std::pair<T,T>> & in) :
+            channels(2),
+            data_vector(in) {}
 
         //copy constructor
         Audio(const Audio<T, 2> & rhs) :
