@@ -1,0 +1,20 @@
+
+> audio.h contains the templating for the Audio class
+
+
+> driver.cpp contains code for a executable which is used to load/save and manipulate Audio
+    
+> It can be compiled and run by typing 'make'
+        
+> This produces and executable named 'samp'
+
+
+> tests.cpp contains simple unit tests or the basic Audio template
+    
+> It can be compiled and run by typing 'make test'
+
+
+> all sample audio .raw files are in the sample_input directory
+    
+> when using files in the directory, ensure the file name is inputted as:
+        sample_input/*.raw
